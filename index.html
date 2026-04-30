@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>여행블로그 마스터 · 아리찌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lavender-50: #f5f0ff;
+    --lavender-100: #ede5ff;
+    --lavender-200: #ddd0ff;
+    --lavender-300: #c4adf7;
+    --lavender-400: #a98bf0;
+    --lavender-500: #9070e0;
+    --lavender-600: #7a5bc8;
+    --lavender-700: #6448a8;
+    --mist: #f9f6ff;
+    --petal: #f0e8ff;
+    --violet-soft: #e0d4ff;
+    --violet-mid: #c8b4f8;
+    --violet-deep: #9b82d4;
+    --text-dark: #2d2542;
+    --text-mid: #5b5080;
+    --text-soft: #8a7aaa;
+    --white: #ffffff;
+    --shadow-soft: 0 4px 30px rgba(160, 130, 220, 0.15);
+    --shadow-mid: 0 8px 40px rgba(140, 110, 200, 0.2);
+    --shadow-glow: 0 0 40px rgba(180, 150, 240, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #f9f5ff 0%, #f0e8ff 30%, #e8dbff 60%, #ddd0ff 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* 배경 장식 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(180,150,240,0.18) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(200,180,255,0.15) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    text-align: center;
+    padding: 64px 24px 52px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(240,232,255,0.4) 100%);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,180,255,0.3);
+    z-index: 1;
+  }
+
+  .logo-tag {
+    display: inline-block;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--violet-deep);
+    background: rgba(180,150,240,0.12);
+    border: 1px solid rgba(180,150,240,0.3);
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700;
+    background: linear-gradient(135deg, #7a5bc8 0%, #9b82d4 40%, #c4adf7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  header p {
+    font-size: 15px;
+    color: var(--text-soft);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+  }
+
+  .header-deco {
+    position: absolute;
+    top: 20px; left: 40px;
+    font-size: 80px;
+    opacity: 0.06;
+    font-family: 'Noto Serif KR', serif;
+    pointer-events: none;
+    color: #7a5bc8;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+    position: relative; z-index: 1;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(210,190,255,0.4);
+    border-radius: 20px;
+    padding: 36px 40px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-soft);
+    transition: box-shadow 0.3s;
+  }
+  .card:hover { box-shadow: var(--shadow-mid); }
+
+  .card-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: var(--violet-deep);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title::before {
+    content: '';
+    display: block;
+    width: 18px; height: 2px;
+    background: linear-gradient(90deg, #9b82d4, #c4adf7);
+    border-radius: 2px;
+  }
+
+  /* ── FORM ELEMENTS ── */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+  .form-row.full { grid-template-columns: 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 7px; }
+
+  label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-soft);
+    letter-spacing: 0.8px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: rgba(248,244,255,0.8);
+    border: 1.5px solid rgba(196,173,247,0.4);
+    border-radius: 12px;
+    padding: 12px 16px;
+    outline: none;
+    transition: all 0.25s;
+    width: 100%;
+  }
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--violet-mid);
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 0 0 3px rgba(196,173,247,0.2);
+  }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  select { appearance: none; cursor: pointer; }
+  input::placeholder, textarea::placeholder { color: #bbb0cc; }
+
+  /* ── CHIP GROUPS ── */
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .chip {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-soft);
+    background: rgba(240,232,255,0.6);
+    border: 1.5px solid rgba(196,173,247,0.35);
+    border-radius: 50px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .chip:hover {
+    background: rgba(220,205,255,0.6);
+    border-color: var(--violet-mid);
+    color: var(--violet-deep);
+  }
+  .chip.active {
+    background: linear-gradient(135deg, #c4adf7, #a98bf0);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 3px 12px rgba(169,139,240,0.35);
+    font-weight: 500;
+  }
+
+  /* ── TOGGLE ── */
+  .toggle-group {
+    display: flex;
+    background: rgba(240,232,255,0.5);
+    border: 1.5px solid rgba(196,173,247,0.3);
+    border-radius: 50px;
+    padding: 4px;
+    width: fit-content;
+  }
+  .toggle-btn {
+    font-size: 13px;
+    padding: 7px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    color: var(--text-soft);
+    border: none;
+    background: transparent;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.2s;
+    font-weight: 400;
+  }
+  .toggle-btn.active {
+    background: white;
+    color: var(--violet-deep);
+    box-shadow: 0 2px 10px rgba(160,130,220,0.2);
+    font-weight: 500;
+  }
+
+  /* ── GENERATE BUTTON ── */
+  .btn-generate {
+    width: 100%;
+    padding: 18px;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: white;
+    background: linear-gradient(135deg, #8b6fd4 0%, #a98bf0 50%, #c4adf7 100%);
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 6px 30px rgba(139,111,212,0.35);
+    position: relative;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .btn-generate::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-generate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(139,111,212,0.45);
+  }
+  .btn-generate:hover::before { opacity: 1; }
+  .btn-generate:active { transform: translateY(0); }
+  .btn-generate.loading { pointer-events: none; opacity: 0.8; }
+
+  /* ── RESULT ── */
+  #result-section {
+    display: none;
+    animation: fadeSlideUp 0.5s ease forwards;
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    text-align: center;
+    margin-bottom: 32px;
+    padding: 28px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(240,232,255,0.6));
+    border-radius: 16px;
+    border: 1px solid rgba(196,173,247,0.3);
+  }
+  .result-header h2 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--violet-deep);
+    margin-bottom: 6px;
+  }
+  .result-header p { font-size: 13px; color: var(--text-soft); }
+
+  /* 결과 블록 */
+  .result-block {
+    background: rgba(255,255,255,0.75);
+    border: 1px solid rgba(210,190,255,0.35);
+    border-radius: 16px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+  }
+  .result-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: linear-gradient(90deg, rgba(240,232,255,0.7), rgba(248,244,255,0.5));
+    border-bottom: 1px solid rgba(210,190,255,0.3);
+  }
+  .result-block-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--violet-deep);
+    text-transform: uppercase;
+  }
+  .btn-copy {
+    font-size: 11px;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--violet-deep);
+    background: rgba(196,173,247,0.2);
+    border: 1px solid rgba(196,173,247,0.4);
+    border-radius: 20px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-copy:hover {
+    background: rgba(196,173,247,0.4);
+  }
+  .btn-copy.copied {
+    background: #a98bf0;
+    color: white;
+    border-color: transparent;
+  }
+  .result-block-body {
+    padding: 20px;
+  }
+
+  /* 제목 목록 */
+  .title-list { list-style: none; }
+  .title-list li {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    background: rgba(248,244,255,0.7);
+    border-left: 3px solid var(--violet-mid);
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-dark);
+    counter-increment: title-counter;
+    position: relative;
+  }
+  .title-list li::before {
+    content: counter(title-counter);
+    position: absolute;
+    left: -20px;
+    font-size: 10px;
+    color: var(--violet-mid);
+    font-weight: 600;
+    top: 50%; transform: translateY(-50%);
+  }
+  .title-list { counter-reset: title-counter; padding-left: 24px; }
+
+  /* 키워드 태그 */
+  .keyword-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .keyword-tag {
+    font-size: 13px;
+    color: var(--violet-deep);
+    background: linear-gradient(135deg, rgba(230,218,255,0.7), rgba(210,192,255,0.5));
+    border: 1px solid rgba(196,173,247,0.4);
+    border-radius: 50px;
+    padding: 5px 14px;
+  }
+
+  /* 프롬프트 텍스트 */
+  .prompt-text {
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--text-mid);
+    white-space: pre-wrap;
+    font-family: 'Gowun Batang', serif;
+  }
+
+  /* 이미지 섹션 */
+  .image-keywords {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .img-keyword-card {
+    background: linear-gradient(135deg, rgba(240,232,255,0.6), rgba(225,210,255,0.4));
+    border: 1px solid rgba(196,173,247,0.3);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-mid);
+  }
+  .img-keyword-card .kw-en {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--violet-deep);
+    margin-bottom: 3px;
+    word-break: break-all;
+  }
+  .img-keyword-card .kw-url {
+    font-size: 10px;
+    color: var(--text-soft);
+    word-break: break-all;
+    text-decoration: none;
+  }
+  .img-keyword-card .kw-url:hover { color: var(--violet-deep); }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 8px 0 24px;
+  }
+  .section-divider span {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 12px;
+    color: var(--text-soft);
+    letter-spacing: 2px;
+    white-space: nowrap;
+  }
+  .section-divider::before, .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(196,173,247,0.4), transparent);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 32px;
+    font-size: 12px;
+    color: var(--text-soft);
+    letter-spacing: 1px;
+    opacity: 0.7;
+    position: relative; z-index: 1;
+  }
+
+  /* ── LOADING DOTS ── */
+  .loading-dots span {
+    display: inline-block;
+    animation: bounce 1.2s infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%,80%,100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 24px 20px; }
+    .form-row { grid-template-columns: 1fr; }
+    .form-row.triple { grid-template-columns: 1fr 1fr; }
+    .image-keywords { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<header>
+  <div class="header-deco">✦</div>
+  <div class="logo-tag">Naver Blog SEO Tool</div>
+  <h1>여행블로그 마스터<br>_아리찌</h1>
+  <p>상위노출 구조의 프롬프트를 자동으로 생성합니다<br>여행 · 숙소 · 제품 · 티켓 · 투어</p>
+</header>
+
+<main>
+
+  <!-- STEP 1: 기본 정보 -->
+  <div class="card">
+    <div class="card-title">Step 01 &nbsp; 기본 정보</div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>지역 / 목적지</label>
+        <input type="text" id="region" placeholder="예: 제주도, 오사카, 방콕" />
+      </div>
+      <div class="field">
+        <label>여행 유형</label>
+        <div class="toggle-group" id="travel-type">
+          <button class="toggle-btn active" data-val="국내">국내</button>
+          <button class="toggle-btn" data-val="해외">해외</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>여행 기간</label>
+        <input type="text" id="duration" placeholder="예: 2박 3일, 당일치기" />
+      </div>
+      <div class="field">
+        <label>주요 키워드</label>
+        <input type="text" id="keyword" placeholder="예: 제주 숙소 추천, 가성비 호텔" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>동행 유형</label>
+        <div class="chip-group" id="companion">
+          <div class="chip active" data-val="혼자여행">🙋 혼자</div>
+          <div class="chip" data-val="커플여행">💑 커플</div>
+          <div class="chip" data-val="가족여행">👨‍👩‍👧 가족</div>
+          <div class="chip" data-val="친구여행">👫 친구</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>도입부 스타일</label>
+        <div class="chip-group" id="intro-style">
+          <div class="chip active" data-val="공감유도형">공감유도형</div>
+          <div class="chip" data-val="문제해결형">문제해결형</div>
+          <div class="chip" data-val="결론선제시형">결론선제시형</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row full">
+      <div class="field">
+        <label>추가 정보 (선택)</label>
+        <textarea id="extra" placeholder="예: 아이와 함께, 5성급 호텔, 특별한 경험, 가성비 중시 등 자유롭게 입력하세요"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: 카테고리 -->
+  <div class="card">
+    <div class="card-title">Step 02 &nbsp; 카테고리</div>
+    <div class="chip-group" id="category">
+      <div class="chip active" data-val="숙소 후기">🏨 숙소 후기</div>
+      <div class="chip" data-val="숙소 위치">📍 숙소 위치</div>
+      <div class="chip" data-val="맛집 추천">🍽 맛집 추천</div>
+      <div class="chip" data-val="항공권 정보">✈️ 항공권 정보</div>
+      <div class="chip" data-val="여행 일정/코스">🗓 여행 일정/코스</div>
+      <div class="chip" data-val="쇼핑/기념품">🛍 쇼핑/기념품</div>
+      <div class="chip" data-val="입장권 정보">🎟 입장권 정보</div>
+      <div class="chip" data-val="티켓 예약">🎫 티켓 예약</div>
+      <div class="chip" data-val="eSIM 추천">📱 eSIM 추천</div>
+      <div class="chip" data-val="투어 추천">🗺 투어 추천</div>
+      <div class="chip" data-val="제품 추천">📦 제품 추천</div>
+    </div>
+  </div>
+
+  <!-- STEP 3: 글 스타일 + 길이 + SEO -->
+  <div class="card">
+    <div class="card-title">Step 03 &nbsp; 글 스타일 · 길이 · SEO</div>
+
+    <div class="form-row triple">
+      <div class="field">
+        <label>글 스타일</label>
+        <div class="chip-group" id="style" style="flex-direction:column; gap:8px;">
+          <div class="chip active" data-val="후기형" style="text-align:center;">후기형</div>
+          <div class="chip" data-val="정보형" style="text-align:center;">정보형</div>
+          <div class="chip" data-val="구매유도형" style="text-align:center;">구매유도형</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>글 길이</label>
+        <div class="chip-group" id="length" style="flex-direction:column; gap:8px;">
+          <div class="chip active" data-val="1500" style="text-align:center;">1,500자</div>
+          <div class="chip" data-val="2000" style="text-align:center;">2,000자 이상</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>SEO 강도</label>
+        <div class="chip-group" id="seo" style="flex-direction:column; gap:8px;">
+          <div class="chip active" data-val="일반" style="text-align:center;">일반</div>
+          <div class="chip" data-val="강하게" style="text-align:center;">🔥 강하게</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 생성 버튼 -->
+  <button class="btn-generate" id="generate-btn" onclick="generate()">
+    ✦ &nbsp; 프롬프트 생성하기
+  </button>
+
+  <!-- RESULT -->
+  <div id="result-section">
+    <div style="height:40px"></div>
+    <div class="section-divider"><span>✦ 생성 결과 ✦</span></div>
+
+    <div class="result-header">
+      <h2 id="result-category-label">숙소 후기 · 후기형</h2>
+      <p id="result-meta-label">제주도 · 국내 · 2박 3일</p>
+    </div>
+
+    <!-- 제목 5개 -->
+    <div class="result-block">
+      <div class="result-block-header">
+        <div class="result-block-title">📋 추천 제목 5개</div>
+        <button class="btn-copy" onclick="copyBlock('titles-content')">복사</button>
+      </div>
+      <div class="result-block-body">
+        <ol class="title-list" id="titles-content"></ol>
+      </div>
+    </div>
+
+    <!-- SEO 키워드 -->
+    <div class="result-block">
+      <div class="result-block-header">
+        <div class="result-block-title">🔍 SEO 키워드</div>
+        <button class="btn-copy" onclick="copyBlock('keywords-content')">복사</button>
+      </div>
+      <div class="result-block-body">
+        <div class="keyword-tags" id="keywords-content"></div>
+      </div>
+    </div>
+
+    <!-- 블로그 프롬프트 -->
+    <div class="result-block">
+      <div class="result-block-header">
+        <div class="result-block-title">✍️ 블로그 작성 프롬프트</div>
+        <button class="btn-copy" onclick="copyBlock('prompt-content')">복사</button>
+      </div>
+      <div class="result-block-body">
+        <div class="prompt-text" id="prompt-content"></div>
+      </div>
+    </div>
+
+    <!-- 이미지 키워드 -->
+    <div class="result-block">
+      <div class="result-block-header">
+        <div class="result-block-title">🖼 Unsplash 이미지 키워드</div>
+        <button class="btn-copy" onclick="copyImgKeywords()">복사</button>
+      </div>
+      <div class="result-block-body">
+        <div class="image-keywords" id="img-keywords-content"></div>
+      </div>
+    </div>
+
+  </div><!-- /result-section -->
+
+</main>
+
+<footer>여행블로그 마스터 _아리찌 &nbsp;·&nbsp; 네이버 블로그 SEO 프롬프트 자동 생성</footer>
+
+<script>
+// ── CHIP / TOGGLE 인터랙션 ──
+['category','style','length','seo','companion','intro-style'].forEach(id => {
+  document.querySelectorAll(`#${id} .chip`).forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll(`#${id} .chip`).forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+    });
+  });
+});
+document.querySelectorAll('#travel-type .toggle-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#travel-type .toggle-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+const getVal = (id) => document.querySelector(`#${id} .active`)?.dataset.val || '';
+
+// ── 카테고리별 글 구조 ──
+const structures = {
+  '숙소 후기':      ['도입부 (예약 계기 & 첫인상)', '위치 & 교통 접근성 📌 [핵심 정보 박스: 주소·도보 거리]', '객실 & 시설 상세 후기', '조식 / 식음 시설 후기', '주변 인프라 & 편의시설', '체크아웃 & 총평 (재방문 의사 포함)'],
+  '숙소 위치':      ['도입부 (위치가 중요한 이유)', '공항·역에서 접근성 📌 [핵심 정보 박스: 소요시간·요금]', '주변 관광지 도보 동선', '편의시설 (편의점·마트·맛집)', '위치 장단점 솔직 정리', '예약 추천 TIP & 마무리'],
+  '맛집 추천':      ['도입부 (이 맛집을 선택한 이유)', '위치 & 접근성 📌 [핵심 정보 박스: 주소·영업시간·웨이팅]', '메뉴 & 가격대 소개', '대표 메뉴 실제 후기 (맛·양·서비스)', '이런 분께 추천! (동행 유형별 추천 포인트)', '총평 & 재방문 의사'],
+  '항공권 정보':    ['도입부 (항공사/노선 선택 이유)', '가격 & 예약 방법 📌 [핵심 정보 박스: 최저가·예약 플랫폼]', '좌석 선택 TIP (앞뒤·창가·복도)', '기내식 & 기내 서비스 후기', '수하물·체크인 꿀팁', '총평 & 추천 대상'],
+  '여행 일정/코스': ['도입부 (여행 개요 & 컨셉)', '전체 일정 한눈에 보기 📌 [핵심 정보 박스: Day별 요약]', 'Day 1 상세 코스 & 이동 동선', 'Day 2~3 상세 코스 & 이동 동선', '예산·경비 총정리 (교통·숙소·식비·관광)', '예약 링크 모음 & 준비물 TIP'],
+  '쇼핑/기념품':    ['도입부 (쇼핑 목적 & 기대)', '추천 쇼핑 스폿 & 위치 📌 [핵심 정보 박스: 영업시간·위치]', '카테고리별 추천템 리스트', '가격 & 구매 방법 (현장·온라인)', '면세·환급 TIP', '총평 & 쇼핑 꿀팁 정리'],
+  '입장권 정보':    ['도입부 (장소 소개 & 선택 이유)', '가격 & 종류별 안내 📌 [핵심 정보 박스: 가격표]', '운영시간 & 휴무일', '온라인 예매 방법 & 할인 TIP', '현장 꿀팁 (동선·대기·베스트 포토존)', '총평 & 추천 포인트'],
+  '티켓 예약':      ['도입부 (이 티켓을 선택한 이유)', '가격 정보 & 할인 방법 📌 [핵심 정보 박스: 최저가·플랫폼]', '예약 플랫폼별 비교 & 방법 안내', '실사용 후기 & 편의성', '주의사항 & 유의점', '추천 대상 & 마무리'],
+  'eSIM 추천':      ['도입부 (로밍 고민 해결 스토리)', 'eSIM vs 포켓와이파이 비교 📌 [핵심 정보 박스: 비용·편의성]', '구매·설치 방법 단계별 안내', '실제 사용 후기 (속도·안정성·연결)', '가격 & 구매처 안내', '추천 대상 & 마무리'],
+  '투어 추천':      ['도입부 (투어 선택 이유 & 기대)', '투어 코스 & 일정 📌 [핵심 정보 박스: 시간·가격·포함사항]', '이동 수단 & 소요 시간', '가이드 & 현장 분위기', '가격·예약 방법 & 할인 TIP', '총평 & 예약 추천'],
+  '제품 추천':      ['도입부 (구매/사용 계기)', '제품 주요 특징 & 스펙 📌 [핵심 정보 박스: 가격·구매처]', '실사용 후기 (장점 중심)', '단점 & 아쉬운 점 솔직 후기', '비슷한 제품과 비교', '총평 & 구매 추천 대상'],
+};
+
+// ── 도입문 패턴 3종 ──
+const introPatterns = {
+  '공감유도형': (region, category, companion) => [
+    `${region} ${category} 준비하시는 ${companion}분들이라면 한 번쯤 고민해보셨을 텐데요.`,
+    `${region} 여행을 앞두고 ${category} 때문에 고민이 되셨던 분들을 위해 정리해봤어요.`,
+    `${region} 다녀온 ${companion}으로서, 같은 고민을 하셨을 분들께 솔직하게 공유드릴게요.`,
+  ],
+  '문제해결형': (region, category) => [
+    `${region} ${category} 어디서 알아봐야 할지 막막하다면 이 글이 딱 도움이 될 거예요.`,
+    `${region} 처음이라 ${category} 정보를 찾고 계셨다면, 제가 직접 정리한 내용 참고하세요.`,
+    `${category} 고민하고 계신다면 결론부터 먼저 말씀드릴게요.`,
+  ],
+  '결론선제시형': (region, category) => [
+    `결론부터 말씀드리면, ${region} ${category}는 무조건 추천입니다!!`,
+    `진짜 찐으로 추천할 수 있는 ${region} ${category} 정보, 지금 바로 공유드릴게요.`,
+    `${region} 여행 준비하면서 가장 잘한 선택이 바로 이 ${category}였어요.`,
+  ],
+};
+
+// ── 지역 한→영 변환 ──
+const regionToEn = {
+  '제주':'jeju island','제주도':'jeju island',
+  '서울':'seoul','부산':'busan','경주':'gyeongju','강릉':'gangneung','전주':'jeonju','인천':'incheon',
+  '여수':'yeosu','속초':'sokcho','춘천':'chuncheon','수원':'suwon','대구':'daegu','광주':'gwangju',
+  '오사카':'osaka','도쿄':'tokyo','교토':'kyoto','후쿠오카':'fukuoka','삿포로':'sapporo',
+  '방콕':'bangkok','치앙마이':'chiang mai','푸켓':'phuket','파타야':'pattaya','푸꾸옥':'phu quoc',
+  '발리':'bali','싱가포르':'singapore','하노이':'hanoi','호치민':'ho chi minh','다낭':'da nang',
+  '파리':'paris','런던':'london','로마':'rome','바르셀로나':'barcelona','암스테르담':'amsterdam',
+  '뉴욕':'new york','라스베가스':'las vegas','하와이':'hawaii','괌':'guam','세부':'cebu',
+  '홍콩':'hong kong','마카오':'macau','상하이':'shanghai','베이징':'beijing','타이베이':'taipei',
+  '시드니':'sydney','멜버른':'melbourne',
+};
+function regionEn(region) {
+  const k = region.trim().toLowerCase();
+  for (const [kor, en] of Object.entries(regionToEn)) {
+    if (k.includes(kor)) return en;
+  }
+  return region;
+}
+
+// ── 카테고리별 Unsplash 이미지 피사체 ──
+const imgSubjects = {
+  '숙소 후기':      (r) => [`${r} hotel room`,`${r} hotel exterior`,`${r} hotel lobby`,`${r} hotel breakfast`,`${r} hotel pool`,`${r} hotel view`],
+  '숙소 위치':      (r) => [`${r} hotel location street`,`${r} city transportation`,`${r} neighborhood walk`,`${r} landmark hotel`,`${r} city map`,`${r} hotel entrance`],
+  '맛집 추천':      (r,kw) => [`${r} restaurant food`,`${r} ${kw || 'local food'}`,`${r} dining interior`,`${r} street food`,`${r} restaurant menu`,`${r} food close up`],
+  '항공권 정보':    (r) => [`${r} airport`,`airplane window seat`,`flight cabin interior`,`airline meal inflight`,`airport departure board`,`${r} airline travel`],
+  '여행 일정/코스': (r) => [`${r} travel itinerary`,`${r} landmark sightseeing`,`${r} city tour`,`${r} travel map`,`${r} travel couple`,`${r} tourist spot`],
+  '쇼핑/기념품':    (r) => [`${r} shopping street`,`${r} souvenir market`,`${r} duty free shopping`,`${r} local market`,`${r} shopping bag`,`${r} gift shop`],
+  '입장권 정보':    (r) => [`${r} tourist attraction`,`${r} landmark entrance`,`${r} theme park`,`${r} sightseeing crowd`,`${r} popular destination`,`${r} visitor view`],
+  '티켓 예약':      (r) => [`${r} event venue`,`${r} attraction ticket`,`mobile booking travel`,`${r} tourist site`,`travel ticket pass`,`${r} reservation online`],
+  'eSIM 추천':      (r) => [`${r} travel smartphone`,`sim card mobile data`,`${r} wifi roaming`,`travel phone signal`,`digital nomad ${r}`,`esim travel abroad`],
+  '투어 추천':      (r) => [`${r} guided tour`,`${r} tour group travel`,`${r} sightseeing bus`,`${r} local guide`,`${r} adventure tour`,`${r} travel experience`],
+  '제품 추천':      (r,kw) => [`${kw || 'travel'} product review`,`${kw || 'travel'} gear flat lay`,`${r} travel essential`,`travel accessories`,`${kw || 'travel'} unboxing`,`lifestyle travel product`],
+};
+
+function generateImgKeywords(region, keyword, category) {
+  const r = regionEn(region);
+  const fn = imgSubjects[category] || imgSubjects['숙소 후기'];
+  return fn(r, keyword).map(s => typeof s === 'function' ? s(keyword) : s);
+}
+
+// ── SEO 키워드 확장 ──
+const year = new Date().getFullYear();
+function expandKeywords(region, keyword, category, seo) {
+  const base = keyword || region;
+  const map = {
+    '숙소 후기':      [`${base} 추천`, `${region} 가성비 호텔`, `${region} 호텔 후기`, `${region} 숙소 솔직 후기`, `${base} ${year}`],
+    '숙소 위치':      [`${region} 위치 좋은 숙소`, `${region} 교통 편한 호텔`, `${region} 중심가 숙소`, `${base} 역 근처`, `${region} 관광지 근처 숙소`],
+    '맛집 추천':      [`${region} 맛집 추천`, `${base} 후기`, `${region} 현지 맛집`, `${base} 가성비`, `${region} 맛집 ${year}`],
+    '항공권 정보':    [`${region} 항공권 추천`, `${region} 비행기 가격`, `${base} 저렴하게 예약`, `${region} 항공 후기`, `${region} 항공권 ${year}`],
+    '여행 일정/코스': [`${region} 여행 일정`, `${region} 자유여행 코스`, `${base} 일정 추천`, `${region} ${duration_hint}일정`, `${region} 여행 경비`],
+    '쇼핑/기념품':    [`${region} 쇼핑 추천`, `${region} 기념품 추천`, `${base} 쇼핑리스트`, `${region} 면세점`, `${region} 기념품 ${year}`],
+    '입장권 정보':    [`${base} 입장료`, `${base} 운영시간`, `${base} 예매 방법`, `${region} 관광지 입장권`, `${base} 할인`],
+    '티켓 예약':      [`${base} 예매`, `${base} 할인 티켓`, `${base} 가격`, `${region} 입장권`, `${base} 최저가`],
+    'eSIM 추천':      [`${region} eSIM 추천`, `${region} 유심 추천`, `${region} 로밍 비교`, `${region} 데이터 요금`, `${region} 인터넷`],
+    '투어 추천':      [`${region} 투어 추천`, `${base} 패키지`, `${region} 가이드 투어`, `${base} 당일 투어`, `${region} 여행 코스`],
+    '제품 추천':      [`${base} 추천`, `${base} 후기`, `${base} 가성비`, `${base} 비교`, `${region} 여행 필수템`],
+  };
+  let kws = map[category] || [`${base} 추천`, `${region} 여행`, `${base} 후기`, `${region} 정보`];
+  if (seo === '강하게') kws.push(`${region} 여행 꿀팁`, `${base} 완벽 가이드`, `${region} 총정리 ${year}`);
+  return kws;
+}
+let duration_hint = '';
+
+// ── 제목 생성 ──
+function generateTitles(region, keyword, category, style, companion) {
+  const k = keyword || `${region} ${category}`;
+  const companionLabel = companion === '가족여행' ? ' | 가족여행' : companion === '커플여행' ? ' | 커플여행' : '';
+  const t = {
+    '후기형': [
+      `${region} ${k} 솔직 후기${companionLabel} (${year} 최신)`,
+      `[${region}] ${k} 진짜 가봤어요!! 찐 후기 총정리`,
+      `${k} 다녀온 후기 | 장단점 솔직하게 공유합니다`,
+      `${region} 여행 중 만난 ${k} | 이거 진짜 추천`,
+      `${k} 실제 이용 후기 (${region} ${companion})`,
+    ],
+    '정보형': [
+      `${k} 완벽 정리 | ${region} 여행자 필독 (${year})`,
+      `${region} 처음이라면? ${k} 이것만 알면 됩니다`,
+      `${k} 가격·예약·꿀팁 한번에 총정리`,
+      `${region} ${k} A to Z 완벽 가이드`,
+      `${k} 정보 총정리 | ${region} 여행 준비 완성`,
+    ],
+    '구매유도형': [
+      `${region} 여행 필수!! ${k} 이렇게 저렴하게 예약하세요`,
+      `${k} 안 고르면 후회합니다 | ${region} 추천 1위 (${year})`,
+      `${k} 지금 예약해야 하는 이유 | 할인 꿀팁 포함`,
+      `${region} ${k} 최저가 예약 방법 완벽 정리`,
+      `${k} 선택 고민 끝! ${region} ${companion} 추천 픽`,
+    ],
+  };
+  return t[style] || t['후기형'];
+}
+
+// ── 프롬프트 생성 ──
+function buildPrompt(region, travelType, duration, keyword, extra, category, style, length, seo, companion, introStyle) {
+  const struct = structures[category] || structures['숙소 후기'];
+  const kws = expandKeywords(region, keyword, category, seo);
+  const charCount = length === '2000' ? '2,000자 이상' : '약 1,500자';
+  const seoRepeat = seo === '강하게' ? '7~8회' : '5~6회';
+  const introPool = introPatterns[introStyle] || introPatterns['공감유도형'];
+  const introSentence = introPool(region, category, companion)[Math.floor(Math.random() * 3)];
+  const emojiGuide = '✈ 📌 ✔ ❗ → ↓ !! 등 이모지·기호를 적극 활용하여 가독성을 높여주세요.';
+  const styleGuide = {
+    '후기형':    '• 1인칭 구어체 (~했어요, ~이에요)\n• 실제 경험처럼 구체적 묘사\n• "제가 직접", "솔직히 말하면", "진짜 찐으로" 등 표현 사용',
+    '정보형':    '• 객관적이고 신뢰감 있는 어조\n• 숫자·가격·시간 등 구체적 데이터 명시\n• 소제목 번호형 (1. 2. 3.)으로 구조화',
+    '구매유도형':'• 독자 결정을 돕는 어조\n• 장점 강조, 타 상품 대비 우위 명시\n• 자연스러운 행동 유도 문구 삽입 (예: "지금 예약하면 ~")',
+  };
+
+  return `당신은 네이버 블로그 SEO 전문가이자 인플루언서 블로거입니다.
+아래 조건을 모두 반영하여 상위 노출에 최적화된 블로그 본문을 작성해주세요.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+📌 기본 정보
+━━━━━━━━━━━━━━━━━━━━━━━
+• 지역: ${region} (${travelType})
+• 여행 기간: ${duration || '미입력'}
+• 동행 유형: ${companion}
+• 카테고리: ${category}
+• 글 스타일: ${style}
+• 목표 글자 수: ${charCount}${extra ? `\n• 추가 정보: ${extra}` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+✍️ 도입부 (첫 문단)
+━━━━━━━━━━━━━━━━━━━━━━━
+도입 스타일: ${introStyle}
+첫 문장 예시: "${introSentence}"
+→ 위 예시를 참고해 자연스럽게 변형하여 도입부를 작성하세요.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+🔍 SEO 규칙
+━━━━━━━━━━━━━━━━━━━━━━━
+• 핵심 키워드 [${keyword || region}]를 ${seoRepeat} 자연스럽게 반복
+• 제목·소제목에 키워드 2개 이상 포함
+• 소제목은 반드시 "1. ○○  2. ○○" 번호형으로 작성
+• 각 소제목 아래 📌 핵심 정보 박스를 삽입 (주요 수치·정보를 박스 형태로 요약)
+• 사진 삽입 위치 최소 6곳 명시: [사진: ○○]
+• ${emojiGuide}
+• 연도(${year}) 정보를 자연스럽게 1~2회 포함
+
+━━━━━━━━━━━━━━━━━━━━━━━
+📝 글 구조 (순서대로 작성)
+━━━━━━━━━━━━━━━━━━━━━━━
+${struct.map((s, i) => `${i + 1}. ${s}`).join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+🏷 포함할 SEO 키워드
+━━━━━━━━━━━━━━━━━━━━━━━
+${kws.join(' / ')}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+🎨 문체 스타일 (${style})
+━━━━━━━━━━━━━━━━━━━━━━━
+${styleGuide[style] || styleGuide['후기형']}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+🔚 마무리 (마지막 문단)
+━━━━━━━━━━━━━━━━━━━━━━━
+• 재방문 의사 또는 추천 의사를 진정성 있게 표현
+• 관련 포스트 유도 문구 삽입:
+  "↓ ${region} 관련 정보 더 보기 ↓"
+  "▼ 예약 링크 & 할인 코드 ▼" (해당되는 경우)
+• 이웃추가·댓글 유도 문구로 마무리
+
+위 조건을 모두 반영하여 네이버 상위 노출에 최적화된 블로그 글을 작성해주세요.`;
+}
+
+// ── GENERATE ──
+function generate() {
+  const region   = document.getElementById('region').value.trim() || '여행지';
+  const travelType = getVal('travel-type');
+  const duration = document.getElementById('duration').value.trim();
+  duration_hint  = duration ? duration + ' ' : '';
+  const keyword  = document.getElementById('keyword').value.trim();
+  const extra    = document.getElementById('extra').value.trim();
+  const category = getVal('category');
+  const style    = getVal('style');
+  const length   = getVal('length');
+  const seo      = getVal('seo');
+  const companion   = getVal('companion');
+  const introStyle  = getVal('intro-style');
+
+  const btn = document.getElementById('generate-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<span class="loading-dots"><span>✦</span><span>✦</span><span>✦</span></span>';
+
+  setTimeout(() => {
+    document.getElementById('result-category-label').textContent = `${category} · ${style} · ${companion}`;
+    document.getElementById('result-meta-label').textContent = `${region} · ${travelType}${duration ? ' · ' + duration : ''} · ${introStyle}`;
+
+    // 제목
+    const titles = generateTitles(region, keyword, category, style, companion);
+    document.getElementById('titles-content').innerHTML = titles.map(t => `<li>${t}</li>`).join('');
+
+    // SEO 키워드
+    const kws = expandKeywords(region, keyword, category, seo);
+    document.getElementById('keywords-content').innerHTML = kws.map(k => `<span class="keyword-tag">${k}</span>`).join('');
+
+    // 프롬프트
+    const prompt = buildPrompt(region, travelType, duration, keyword, extra, category, style, length, seo, companion, introStyle);
+    document.getElementById('prompt-content').textContent = prompt;
+
+    // 이미지 키워드
+    const imgKws = generateImgKeywords(region, keyword, category);
+    document.getElementById('img-keywords-content').innerHTML = imgKws.map(kw => `
+      <div class="img-keyword-card">
+        <div class="kw-en">${kw}</div>
+        <a class="kw-url" href="https://unsplash.com/s/photos/${encodeURIComponent(kw)}" target="_blank">unsplash.com →</a>
+      </div>`).join('');
+
+    const resultSection = document.getElementById('result-section');
+    resultSection.style.display = 'block';
+    resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    btn.classList.remove('loading');
+    btn.innerHTML = '✦ &nbsp; 다시 생성하기';
+  }, 600);
+}
+
+// ── COPY ──
+function copyBlock(id) {
+  const el = document.getElementById(id);
+  let text = '';
+  if (el.tagName === 'OL') {
+    text = Array.from(el.querySelectorAll('li')).map((li, i) => `${i+1}. ${li.textContent}`).join('\n');
+  } else if (el.classList.contains('keyword-tags')) {
+    text = Array.from(el.querySelectorAll('.keyword-tag')).map(t => t.textContent).join(', ');
+  } else {
+    text = el.textContent;
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.closest('.result-block').querySelector('.btn-copy');
+    btn.textContent = '✓ 복사됨'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+function copyImgKeywords() {
+  const el = document.getElementById('img-keywords-content');
+  const text = Array.from(el.querySelectorAll('.kw-en')).map(e => e.textContent).join(', ');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.closest('.result-block').querySelector('.btn-copy');
+    btn.textContent = '✓ 복사됨'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) generate(); });
+</script>
+</body>
+</html>
