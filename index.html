@@ -561,10 +561,21 @@
       </div>
     </div>
 
-    <div class="form-row full">
+    <div class="form-row">
+      <div class="field">
+        <label>가격 · 비용 정보 (직접 입력)</label>
+        <input type="text" id="price-info" placeholder="예: 1박 15만원 조식 포함 / 입장료 성인 12,000원 / 투어 1인 45,000원" />
+      </div>
       <div class="field">
         <label>추가 정보 (선택)</label>
-        <textarea id="extra" placeholder="예: 아이와 함께, 5성급 호텔, 특별한 경험, 가성비 중시 등 자유롭게 입력하세요"></textarea>
+        <input type="text" id="extra" placeholder="예: 아이와 함께, 가성비 중시, 특별한 경험 등" />
+      </div>
+    </div>
+
+    <div class="form-row full">
+      <div class="field">
+        <label>할인코드 · 예약링크 (선택)</label>
+        <input type="text" id="affiliate-link" placeholder="예: 클룩 할인코드 ARICHI / 마이리얼트립 예약링크 https://... / 야놀자 10% 쿠폰코드 BLOG10" />
       </div>
     </div>
   </div>
@@ -584,6 +595,24 @@
       <div class="chip" data-val="eSIM 추천">📱 eSIM 추천</div>
       <div class="chip" data-val="투어 추천">🗺 투어 추천</div>
       <div class="chip" data-val="제품 추천">📦 제품 추천</div>
+    </div>
+  </div>
+
+  <!-- 투어 코스 입력 (투어 추천 카테고리 선택 시 표시) -->
+  <div class="card" id="tour-course-card" style="display:none;">
+    <div class="card-title">투어 코스 입력</div>
+    <div class="field">
+      <label>투어 일정을 그대로 붙여넣으세요</label>
+      <textarea id="tour-course" style="min-height:130px;" placeholder="예:
+09:00 호텔 픽업
+10:00 성산일출봉 도착 — 정상까지 약 20분 도보
+11:30 우도 페리 탑승
+12:30 우도 땅콩아이스크림 + 점심
+14:00 협재해수욕장
+16:00 한림공원 관람
+18:00 호텔 드롭오프
+
+형식 자유 — 시간·장소·활동 등 아는 대로 입력하세요"></textarea>
     </div>
   </div>
 
@@ -689,6 +718,11 @@
     c.addEventListener('click', () => {
       document.querySelectorAll(`#${id} .chip`).forEach(x => x.classList.remove('active'));
       c.classList.add('active');
+      // 투어 카테고리 선택 시 코스 입력창 표시
+      if (id === 'category') {
+        document.getElementById('tour-course-card').style.display =
+          c.dataset.val === '투어 추천' ? 'block' : 'none';
+      }
     });
   });
 });
@@ -703,35 +737,35 @@ const getVal = (id) => document.querySelector(`#${id} .active`)?.dataset.val || 
 
 // ── 카테고리별 글 구조 ──
 const structures = {
-  '숙소 후기':      ['도입부 (예약 계기 & 첫인상)', '위치 & 교통 접근성 📌 [핵심 정보 박스: 주소·도보 거리]', '객실 & 시설 상세 후기', '조식 / 식음 시설 후기', '주변 인프라 & 편의시설', '체크아웃 & 총평 (재방문 의사 포함)'],
+  '숙소 후기':      ['도입부 (예약 계기 & 첫인상)', '위치 & 교통 접근성 📌 [핵심 정보 박스: 주소·도보 거리]', '객실 & 시설 상세 후기', '조식 / 식음 시설 후기', '주변 인프라 & 편의시설', '체크아웃 & 마무리 (재방문 의향 포함)'],
   '숙소 위치':      ['도입부 (위치가 중요한 이유)', '공항·역에서 접근성 📌 [핵심 정보 박스: 소요시간·요금]', '주변 관광지 도보 동선', '편의시설 (편의점·마트·맛집)', '위치 장단점 솔직 정리', '예약 추천 TIP & 마무리'],
-  '맛집 추천':      ['도입부 (이 맛집을 선택한 이유)', '위치 & 접근성 📌 [핵심 정보 박스: 주소·영업시간·웨이팅]', '메뉴 & 가격대 소개', '대표 메뉴 실제 후기 (맛·양·서비스)', '이런 분께 추천! (동행 유형별 추천 포인트)', '총평 & 재방문 의사'],
-  '항공권 정보':    ['도입부 (항공사/노선 선택 이유)', '가격 & 예약 방법 📌 [핵심 정보 박스: 최저가·예약 플랫폼]', '좌석 선택 TIP (앞뒤·창가·복도)', '기내식 & 기내 서비스 후기', '수하물·체크인 꿀팁', '총평 & 추천 대상'],
+  '맛집 추천':      ['도입부 (이 맛집을 선택한 이유)', '위치 & 접근성 📌 [핵심 정보 박스: 주소·영업시간·웨이팅]', '메뉴 & 가격대 소개', '대표 메뉴 실제 후기 (맛·양·서비스)', '이런 분께 추천! (동행 유형별 추천 포인트)', '마무리 & 재방문 의향'],
+  '항공권 정보':    ['도입부 (항공사/노선 선택 이유)', '가격 & 예약 방법 📌 [핵심 정보 박스: 최저가·예약 플랫폼]', '좌석 선택 TIP (앞뒤·창가·복도)', '기내식 & 기내 서비스 후기', '수하물·체크인 꿀팁', '마무리 & 추천 대상'],
   '여행 일정/코스': ['도입부 (여행 개요 & 컨셉)', '전체 일정 한눈에 보기 📌 [핵심 정보 박스: Day별 요약]', 'Day 1 상세 코스 & 이동 동선', 'Day 2~3 상세 코스 & 이동 동선', '예산·경비 총정리 (교통·숙소·식비·관광)', '예약 링크 모음 & 준비물 TIP'],
-  '쇼핑/기념품':    ['도입부 (쇼핑 목적 & 기대)', '추천 쇼핑 스폿 & 위치 📌 [핵심 정보 박스: 영업시간·위치]', '카테고리별 추천템 리스트', '가격 & 구매 방법 (현장·온라인)', '면세·환급 TIP', '총평 & 쇼핑 꿀팁 정리'],
-  '입장권 정보':    ['도입부 (장소 소개 & 선택 이유)', '가격 & 종류별 안내 📌 [핵심 정보 박스: 가격표]', '운영시간 & 휴무일', '온라인 예매 방법 & 할인 TIP', '현장 꿀팁 (동선·대기·베스트 포토존)', '총평 & 추천 포인트'],
+  '쇼핑/기념품':    ['도입부 (쇼핑 목적 & 기대)', '추천 쇼핑 스폿 & 위치 📌 [핵심 정보 박스: 영업시간·위치]', '카테고리별 추천템 리스트', '가격 & 구매 방법 (현장·온라인)', '면세·환급 TIP', '마무리 & 쇼핑 꿀팁 정리'],
+  '입장권 정보':    ['도입부 (장소 소개 & 선택 이유)', '가격 & 종류별 안내 📌 [핵심 정보 박스: 가격표]', '운영시간 & 휴무일', '온라인 예매 방법 & 할인 TIP', '현장 꿀팁 (동선·대기·베스트 포토존)', '마무리 & 추천 포인트'],
   '티켓 예약':      ['도입부 (이 티켓을 선택한 이유)', '가격 정보 & 할인 방법 📌 [핵심 정보 박스: 최저가·플랫폼]', '예약 플랫폼별 비교 & 방법 안내', '실사용 후기 & 편의성', '주의사항 & 유의점', '추천 대상 & 마무리'],
   'eSIM 추천':      ['도입부 (로밍 고민 해결 스토리)', 'eSIM vs 포켓와이파이 비교 📌 [핵심 정보 박스: 비용·편의성]', '구매·설치 방법 단계별 안내', '실제 사용 후기 (속도·안정성·연결)', '가격 & 구매처 안내', '추천 대상 & 마무리'],
-  '투어 추천':      ['도입부 (투어 선택 이유 & 기대)', '투어 코스 & 일정 📌 [핵심 정보 박스: 시간·가격·포함사항]', '이동 수단 & 소요 시간', '가이드 & 현장 분위기', '가격·예약 방법 & 할인 TIP', '총평 & 예약 추천'],
-  '제품 추천':      ['도입부 (구매/사용 계기)', '제품 주요 특징 & 스펙 📌 [핵심 정보 박스: 가격·구매처]', '실사용 후기 (장점 중심)', '단점 & 아쉬운 점 솔직 후기', '비슷한 제품과 비교', '총평 & 구매 추천 대상'],
+  '투어 추천':      ['도입부 (이 투어를 선택하게 된 이유)', '투어 기본 정보 📌 [소요 시간·가격·포함사항·집합 장소]', '실제 투어 진행 순서 & 각 코스별 소요 시간', '현장에서 느낀 점 (분위기·가이드·함께한 사람들)', '인상 깊었던 순간 & 솔직한 감상', '마무리 (다시 참여할 의향)'],
+  '제품 추천':      ['도입부 (구매/사용 계기)', '제품 주요 특징 & 스펙 📌 [핵심 정보 박스: 가격·구매처]', '실사용 후기 (장점 중심)', '단점 & 아쉬운 점 솔직 후기', '비슷한 제품과 비교', '마무리 & 구매 추천 대상'],
 };
 
 // ── 도입문 패턴 3종 ──
 const introPatterns = {
   '공감유도형': (region, category, companion) => [
-    `${region} ${category} 준비하시는 ${companion}분들이라면 한 번쯤 고민해보셨을 텐데요.`,
-    `${region} 여행을 앞두고 ${category} 때문에 고민이 되셨던 분들을 위해 정리해봤어요.`,
-    `${region} 다녀온 ${companion}으로서, 같은 고민을 하셨을 분들께 솔직하게 공유드릴게요.`,
+    `${region} 여행을 준비하면서 ${category} 때문에 고민이 많으셨던 분들께 도움이 됐으면 해서 정리해봤어요.`,
+    `${region} ${category} 정보를 찾고 계신 분들을 위해 직접 경험한 내용을 솔직하게 적어봤어요.`,
+    `${companion}으로 ${region} 여행을 다녀왔는데, 같은 고민을 하셨을 분들께 공유드릴게요.`,
   ],
   '문제해결형': (region, category) => [
-    `${region} ${category} 어디서 알아봐야 할지 막막하다면 이 글이 딱 도움이 될 거예요.`,
-    `${region} 처음이라 ${category} 정보를 찾고 계셨다면, 제가 직접 정리한 내용 참고하세요.`,
-    `${category} 고민하고 계신다면 결론부터 먼저 말씀드릴게요.`,
+    `${region} ${category} 정보가 생각보다 많지 않아서 직접 찾아보고 정리한 내용이에요.`,
+    `${region} 처음 방문이라 ${category} 관련해서 꽤 오래 찾아봤는데, 그 내용을 한 곳에 모아봤어요.`,
+    `${region} ${category}를 선택하기 전에 알았으면 좋았을 정보들을 정리해봤어요.`,
   ],
   '결론선제시형': (region, category) => [
-    `결론부터 말씀드리면, ${region} ${category}는 무조건 추천입니다!!`,
-    `진짜 찐으로 추천할 수 있는 ${region} ${category} 정보, 지금 바로 공유드릴게요.`,
-    `${region} 여행 준비하면서 가장 잘한 선택이 바로 이 ${category}였어요.`,
+    `솔직히 말씀드리면, ${region} ${category}는 생각보다 만족도가 높았어요.`,
+    `직접 다녀와서 자신 있게 소개할 수 있는 ${region} ${category} 정보예요.`,
+    `${region} 여행을 준비하면서 가장 잘한 선택 중 하나가 이 ${category}였어요.`,
   ],
 };
 
@@ -831,76 +865,129 @@ function generateTitles(region, keyword, category, style, companion) {
 }
 
 // ── 프롬프트 생성 ──
-function buildPrompt(region, travelType, duration, keyword, extra, category, style, length, seo, companion, introStyle) {
+function buildPrompt(region, travelType, duration, keyword, priceInfo, extra, affiliateLink, category, style, length, seo, companion, introStyle, tourCourse) {
   const struct = structures[category] || structures['숙소 후기'];
   const kws = expandKeywords(region, keyword, category, seo);
   const charCount = length === '2000' ? '2,000자 이상' : '약 1,500자';
-  const seoRepeat = seo === '강하게' ? '7~8회' : '5~6회';
+  const seoRepeat = seo === '강하게' ? '7회 이상' : '5회 이상';
   const introPool = introPatterns[introStyle] || introPatterns['공감유도형'];
   const introSentence = introPool(region, category, companion)[Math.floor(Math.random() * 3)];
-  const emojiGuide = '✈ 📌 ✔ ❗ → ↓ !! 등 이모지·기호를 적극 활용하여 가독성을 높여주세요.';
+  const mainKeyword = keyword || region;
+
   const styleGuide = {
-    '후기형':    '• 1인칭 구어체 (~했어요, ~이에요)\n• 실제 경험처럼 구체적 묘사\n• "제가 직접", "솔직히 말하면", "진짜 찐으로" 등 표현 사용',
-    '정보형':    '• 객관적이고 신뢰감 있는 어조\n• 숫자·가격·시간 등 구체적 데이터 명시\n• 소제목 번호형 (1. 2. 3.)으로 구조화',
-    '구매유도형':'• 독자 결정을 돕는 어조\n• 장점 강조, 타 상품 대비 우위 명시\n• 자연스러운 행동 유도 문구 삽입 (예: "지금 예약하면 ~")',
+    '후기형':    '• ~했어요, ~이에요, ~더라고요 체로 통일\n• 과장·감탄 표현 금지 ("완전", "진짜", "무조건" 등)\n• 실제로 경험한 것처럼 구체적으로 묘사 — 그때의 날씨, 분위기, 음식 맛, 사람들 반응, 느낀 감정 등 감각적 디테일 포함\n• "생각보다", "솔직히", "그때 느꼈던 건" 같은 표현으로 현장감 살리기\n• 좋은 점과 아쉬운 점 모두 담백하게 언급',
+    '정보형':    '• ~했어요, ~이에요 체로 통일\n• 가격·시간·위치 등 수치는 입력된 정보 기준으로 정확히 명시\n• 직접 경험한 내용을 바탕으로 독자가 실제로 활용할 수 있는 팁 위주\n• 경험담을 녹여 신뢰감 있게 작성',
+    '구매유도형':'• ~했어요, ~이에요 체로 통일\n• 직접 써보거나 다녀온 경험을 바탕으로 장점을 구체적으로 설명\n• 단점도 솔직하게 짧게 언급해 신뢰감 확보\n• 독자가 "나도 해봐야겠다"는 생각이 들도록 현장감 있게 작성',
   };
 
-  return `당신은 네이버 블로그 SEO 전문가이자 인플루언서 블로거입니다.
-아래 조건을 모두 반영하여 상위 노출에 최적화된 블로그 본문을 작성해주세요.
+  return `네이버 블로그에 올릴 ${category} 글을 작성해주세요.
+
+아래 정보를 바탕으로, 실제로 다녀온 사람이 직접 쓴 것처럼 자연스럽고 정성스럽게 작성해주세요.
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-📌 기본 정보
+📌 글 기본 정보
 ━━━━━━━━━━━━━━━━━━━━━━━
-• 지역: ${region} (${travelType})
-• 여행 기간: ${duration || '미입력'}
-• 동행 유형: ${companion}
-• 카테고리: ${category}
-• 글 스타일: ${style}
-• 목표 글자 수: ${charCount}${extra ? `\n• 추가 정보: ${extra}` : ''}
+키워드: ${mainKeyword}
+지역: ${region} / ${travelType} / ${companion}
+${duration ? `기간: ${duration}` : ''}${priceInfo ? `\n가격 정보: ${priceInfo}` : ''}${extra ? `\n참고사항: ${extra}` : ''}
+글 분량: ${charCount}
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-✍️ 도입부 (첫 문단)
+작성 전 참고 사항
 ━━━━━━━━━━━━━━━━━━━━━━━
-도입 스타일: ${introStyle}
-첫 문장 예시: "${introSentence}"
-→ 위 예시를 참고해 자연스럽게 변형하여 도입부를 작성하세요.
+• 네이버에서 [${mainKeyword}]로 검색했을 때 상위에 노출된 블로그 글들의 구성과 흐름을 참고해서 비슷한 수준으로 작성
+• 가격 등 수치 정보는 위에 입력된 내용만 사용. 입력되지 않은 정보는 "(직접 입력)" 형태로 표시
+• 모르거나 불확실한 사실은 만들어 쓰지 말고 비워두기
+
+절대 금지 사항:
+• [사진: ○○], [이미지: ○○], [여기에 사진 삽입] 등 사진 위치를 나타내는 모든 표현 금지
+• 어떤 카테고리, 어떤 섹션에서도 사진 위치를 특정하거나 언급하지 말 것
+• 글은 텍스트만으로 완성하고 사진 관련 표시는 일절 작성하지 말 것
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-🔍 SEO 규칙
+도입부 스타일: ${introStyle}
 ━━━━━━━━━━━━━━━━━━━━━━━
-• 핵심 키워드 [${keyword || region}]를 ${seoRepeat} 자연스럽게 반복
-• 제목·소제목에 키워드 2개 이상 포함
-• 소제목은 반드시 "1. ○○  2. ○○" 번호형으로 작성
-• 각 소제목 아래 📌 핵심 정보 박스를 삽입 (주요 수치·정보를 박스 형태로 요약)
-• 사진 삽입 위치 최소 6곳 명시: [사진: ○○]
-• ${emojiGuide}
-• 연도(${year}) 정보를 자연스럽게 1~2회 포함
+아래 예시를 참고해서 자연스럽게 시작해주세요.
+"${introSentence}"
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-📝 글 구조 (순서대로 작성)
+글 구조
 ━━━━━━━━━━━━━━━━━━━━━━━
-${struct.map((s, i) => `${i + 1}. ${s}`).join('\n')}
+${struct.map((s, i) => `${i + 1}) ${s}`).join('\n')}${tourCourse ? `
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-🏷 포함할 SEO 키워드
+투어 코스 (입력된 일정 기반으로 작성)
 ━━━━━━━━━━━━━━━━━━━━━━━
-${kws.join(' / ')}
+${tourCourse}
+
+각 장소마다 아래 내용을 자연스럽게 풀어서 써주세요.
+- 그 장소에서 실제로 한 것
+- 머문 시간
+- 느낀 분위기나 감정
+- 기억에 남는 순간
+
+코스를 단순 나열하지 말고 경험담처럼 이야기 형식으로 작성해주세요.
+항목이 많으면 인상 깊은 2~3곳은 자세하게, 나머지는 자연스럽게 이어주세요.` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-🎨 문체 스타일 (${style})
+SEO 규칙
+━━━━━━━━━━━━━━━━━━━━━━━
+• 핵심 키워드 [${mainKeyword}]를 본문에 ${seoRepeat} 자연스럽게 포함
+• 소제목에도 키워드 포함
+• 소제목은 번호형으로 작성 (1) 2) 3))
+• 관련 키워드도 자연스럽게 포함: ${kws.slice(0,4).join(', ')}
+• 연도(${year}) 정보 1~2회 포함
+
+━━━━━━━━━━━━━━━━━━━━━━━
+문체 & 가독성
 ━━━━━━━━━━━━━━━━━━━━━━━
 ${styleGuide[style] || styleGuide['후기형']}
+• 문단은 2~3문장씩 짧게 끊고 줄바꿈
+• 이모지는 본문 전체에서 1~2개만 (✔ 정도), 남용 금지
+• "~로 확인됐어요", "~인 것으로 나타났어요", "총평", "~로 안내되어 있었고" 등 기사체·AI체·설명체 표현 금지
+• 후기·경험 섹션은 특히 구체적으로 — 몇 시였는지, 어떤 음식이 나왔는지, 어떤 풍경이었는지, 함께한 사람과 어떤 대화를 나눴는지 등 실제 장면을 묘사하듯 작성
+• 단순히 "좋았어요"로 끝내지 말고 왜 좋았는지, 어떤 순간이 기억에 남았는지 구체적으로 서술
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-🔚 마무리 (마지막 문단)
+글 마무리 형식
 ━━━━━━━━━━━━━━━━━━━━━━━
-• 재방문 의사 또는 추천 의사를 진정성 있게 표현
-• 관련 포스트 유도 문구 삽입:
-  "↓ ${region} 관련 정보 더 보기 ↓"
-  "▼ 예약 링크 & 할인 코드 ▼" (해당되는 경우)
-• 이웃추가·댓글 유도 문구로 마무리
+본문이 끝난 뒤 아래 순서로 마무리해주세요.
 
-위 조건을 모두 반영하여 네이버 상위 노출에 최적화된 블로그 글을 작성해주세요.`;
+1) 짧은 마무리 멘트 1~2줄
+   (예: "직접 다녀와보니 생각보다 훨씬 만족스러웠어요. 고민 중이신 분들께 도움이 됐으면 해요.")
+
+2) ✔ 형식으로 추천 대상 5줄 — "~하고 싶은 분", "~를 원하는 분" 형태로
+   ✔ ${region} 여행을 처음 준비하는 분
+   ✔ [추천 대상 2]
+   ✔ [추천 대상 3]
+   ✔ [추천 대상 4]
+   ✔ [추천 대상 5]${affiliateLink ? `
+
+━━━━━━━━━━━━━━━━━━━━━━━
+링크 · 할인코드 삽입 (총 2회)
+━━━━━━━━━━━━━━━━━━━━━━━
+아래 링크/코드를 본문에 자연스럽게 2번 삽입해주세요.
+
+${affiliateLink}
+
+글 작성 전, 위 링크에 접속해서 아래 정보를 파악하고 본문에 반영해주세요.
+- 상품명 / 투어명 / 서비스명
+- 가격 및 포함 사항
+- 주요 특징이나 혜택
+- 할인코드가 있다면 사용 방법
+파악한 정보는 자연스럽게 본문에 녹여서 작성하고, 링크 페이지에서 확인되지 않는 내용은 임의로 만들지 마세요.
+
+1회차 — 가격·예약 방법 설명 직후 (본문 중간)
+   자연스러운 연결 문장 1줄 작성 후:
+   ▶ 예약 바로가기
+   ${affiliateLink}
+
+2회차 — ✔ 추천 대상 목록 바로 아래 (글 맨 마지막)
+   ▼ 할인코드 · 예약링크 확인하기
+   ${affiliateLink}
+
+링크 앞 문장은 광고처럼 느껴지지 않게 글 흐름에서 자연스럽게 이어주세요.
+▶ ▼ 기호는 링크 앞에만 사용, 본문 다른 곳에서 사용 금지` : ''}`;
 }
 
 // ── GENERATE ──
@@ -910,13 +997,16 @@ function generate() {
   const duration = document.getElementById('duration').value.trim();
   duration_hint  = duration ? duration + ' ' : '';
   const keyword  = document.getElementById('keyword').value.trim();
+  const priceInfo = document.getElementById('price-info').value.trim();
   const extra    = document.getElementById('extra').value.trim();
+  const affiliateLink = document.getElementById('affiliate-link').value.trim();
   const category = getVal('category');
   const style    = getVal('style');
   const length   = getVal('length');
   const seo      = getVal('seo');
   const companion   = getVal('companion');
   const introStyle  = getVal('intro-style');
+  const tourCourse  = document.getElementById('tour-course').value.trim();
 
   const btn = document.getElementById('generate-btn');
   btn.classList.add('loading');
@@ -935,7 +1025,7 @@ function generate() {
     document.getElementById('keywords-content').innerHTML = kws.map(k => `<span class="keyword-tag">${k}</span>`).join('');
 
     // 프롬프트
-    const prompt = buildPrompt(region, travelType, duration, keyword, extra, category, style, length, seo, companion, introStyle);
+    const prompt = buildPrompt(region, travelType, duration, keyword, priceInfo, extra, affiliateLink, category, style, length, seo, companion, introStyle, tourCourse);
     document.getElementById('prompt-content').textContent = prompt;
 
     // 이미지 키워드
