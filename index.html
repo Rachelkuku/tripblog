@@ -847,16 +847,47 @@ function expandKeywords(region, keyword, category, seo) {
 let duration_hint = '';
 
 // ── 제목 생성 ──
-function generateTitles(region, keyword, category, style, companion) {
+function generateTitles(region, keyword, category, style, companion, introStyle) {
   const k = keyword || `${region} ${category}`;
   const companionLabel = companion === '가족여행' ? ' | 가족여행' : companion === '커플여행' ? ' | 커플여행' : '';
+
+  if (introStyle === '훅제시형') {
+    const hookPools = [
+      // 1. 모르면 손해형
+      `${region} ${k} 모르고 가면 진짜 아까워요`,
+      `${region} ${k} 처음이라면 꼭 알고 가세요`,
+      `${k} 가기 전에 이건 꼭 확인하세요`,
+      // 2. 결정장애 해결형
+      `${region} ${k} 갈까 말까 고민된다면 이 글부터 보세요`,
+      `${k} 내돈내산 기준으로 다시 선택할지 솔직하게 말해볼게요`,
+      // 3. 솔직 후기형
+      `${region} ${k} 직접 다녀와보니 생각보다 달랐던 점`,
+      `${k} 광고 말고 실제로 느낀 솔직 후기`,
+      // 4. 비교·선택형
+      `${region} ${k} 여러 개 비교하다가 결국 이걸 선택한 이유`,
+      `${k} 실패 없이 고르려면 이 기준만 보세요`,
+      // 5. 경험담형
+      `${region} ${k} 직접 해보고 느낀 현실 후기`,
+      `${k} 다녀온 사람만 아는 포인트 정리`,
+      // 6. 아쉬움 방지형
+      `${region} ${k} 가기 전에 알았으면 더 좋았을 것들`,
+      `${k} 처음 가는 분들이 놓치기 쉬운 부분 정리`,
+      // 7. 요즘 감성형
+      `요즘 다들 왜 ${region} ${k} 가는지 알겠더라고요`,
+      `${k} 솔직히 기대 안 했는데 만족했어요`,
+    ];
+    // 매 생성마다 다른 5개 노출 (랜덤 셔플)
+    const shuffled = hookPools.sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 5);
+  }
+
   const t = {
     '후기형': [
       `${region} ${k} 솔직 후기${companionLabel} (${year} 최신)`,
-      `[${region}] ${k} 진짜 가봤어요!! 찐 후기 총정리`,
       `${k} 다녀온 후기 | 장단점 솔직하게 공유합니다`,
-      `${region} 여행 중 만난 ${k} | 이거 진짜 추천`,
+      `${region} 여행 중 만난 ${k} | 직접 경험한 후기`,
       `${k} 실제 이용 후기 (${region} ${companion})`,
+      `${region} ${k} 좋았던 점 아쉬운 점 담백하게 정리`,
     ],
     '정보형': [
       `${k} 완벽 정리 | ${region} 여행자 필독 (${year})`,
@@ -866,11 +897,11 @@ function generateTitles(region, keyword, category, style, companion) {
       `${k} 정보 총정리 | ${region} 여행 준비 완성`,
     ],
     '구매유도형': [
-      `${region} 여행 필수!! ${k} 이렇게 저렴하게 예약하세요`,
-      `${k} 안 고르면 후회합니다 | ${region} 추천 1위 (${year})`,
+      `${region} ${k} 이렇게 저렴하게 예약하는 방법`,
       `${k} 지금 예약해야 하는 이유 | 할인 꿀팁 포함`,
       `${region} ${k} 최저가 예약 방법 완벽 정리`,
       `${k} 선택 고민 끝! ${region} ${companion} 추천 픽`,
+      `${region} ${k} 예약 전 꼭 알아야 할 것들`,
     ],
   };
   return t[style] || t['후기형'];
@@ -1041,7 +1072,7 @@ function generate() {
     document.getElementById('result-meta-label').textContent = `${region} · ${travelType}${duration ? ' · ' + duration : ''} · ${introStyle}`;
 
     // 제목
-    const titles = generateTitles(region, keyword, category, style, companion);
+    const titles = generateTitles(region, keyword, category, style, companion, introStyle);
     document.getElementById('titles-content').innerHTML = titles.map(t => `<li>${t}</li>`).join('');
 
     // SEO 키워드
